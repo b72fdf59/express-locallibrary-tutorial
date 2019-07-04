@@ -5,7 +5,7 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
 var mongoDB =
-  "mongodb+srv://MyMongoDBUser:Squareof4is16!@gettingstarted-v7pad.mongodb.net/local_library?retryWrites=true&w=majority";
+  "mongodb+srv://MyMongoDBUser:Squareof5is25@gettingstarted-v7pad.mongodb.net/local_library?retryWrites=true&w=majority";
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");

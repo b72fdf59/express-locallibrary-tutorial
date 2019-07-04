@@ -3,7 +3,7 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 var BookInstanceSchema = new Schema({
-  book: { type: Schema.Types.ObjectId, ref: Book, required: true },
+  book: { type: Schema.Types.ObjectId, ref: 'Book', required: true },
   imprint: { type: String, required: true },
   status: {
     type: String,
