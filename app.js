@@ -4,6 +4,7 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
+var hbs = require('hbs')
 var mongoDB =
   "mongodb+srv://MyMongoDBUser:Squareof5is25@gettingstarted-v7pad.mongodb.net/local_library?retryWrites=true&w=majority";
 
@@ -20,6 +21,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error'))
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "hbs");
+hbs.registerPartials(__dirname + "/views/partials");
 
 app.use(logger("dev"));
 app.use(express.json());
