@@ -56,19 +56,19 @@ exports.author_create_get = function(req, res) {
 
 // Handle Author create on POST.
 exports.author_create_post = [
-  // Validate fields
+  // Validate fields.
   body("first_name")
     .isLength({ min: 1 })
     .trim()
-    .withMessage("First name must be specified")
+    .withMessage("First name must be specified.")
     .isAlphanumeric()
-    .withMessage("First name has non-alphanumeric characters"),
-  body("last_name")
+    .withMessage("First name has non-alphanumeric characters."),
+  body("family_name")
     .isLength({ min: 1 })
     .trim()
-    .withMessage("Family name must be specified")
+    .withMessage("Family name must be specified.")
     .isAlphanumeric()
-    .withMessage("First name has non-alphanumeric characters"),
+    .withMessage("Family name has non-alphanumeric characters."),
   body("date_of_birth", "Invalid date of birth")
     .optional({ checkFalsy: true })
     .isISO8601(),
@@ -87,24 +87,26 @@ exports.author_create_post = [
     // Extract the validation errors from a request.
     const errors = validationResult(req);
 
+    // Create Author object with escaped and trimmed data
+    var author = new Author({
+      first_name: req.body.first_name,
+      family_name: req.body.family_name,
+      date_of_birth: req.body.date_of_birth,
+      date_of_death: req.body.date_of_death
+    });
+
     if (!errors.isEmpty()) {
       // There are errors. Render form again with sanitized values/errors messages.
       res.render("author_form", {
         title: "Create Author",
-        author: req.body,
+        author: author,
         errors: errors.array()
       });
       return;
     } else {
       // Data from form is valid.
 
-      var author = new Author({
-        first_name: req.body.first_name,
-        family_name: req.body.family_name,
-        date_of_birth: req.body.date_of_birth,
-        date_of_death: req.body.date_of_death
-      });
-
+      // Save author.
       author.save(function(err) {
         if (err) {
           return next(err);
@@ -117,13 +119,70 @@ exports.author_create_post = [
 ];
 
 // Display Author delete form on GET.
-exports.author_delete_get = function(req, res) {
-  res.send("NOT IMPLEMENTED: Author delete GET");
+exports.author_delete_get = function(req, res, next) {
+  async.parallel(
+    {
+      author: function(callback) {
+        Author.findById(req.params.id).exec(callback);
+      },
+      authors_books: function(callback) {
+        Book.find({ author: req.params.id }).exec(callback);
+      }
+    },
+    function(err, results) {
+      if (err) {
+        return next(err);
+      }
+      if (results.author == null) {
+        // No results.
+        res.redirect("/catalog/authors");
+      }
+      // Successful, so render.
+      res.render("author_delete", {
+        title: "Delete Author",
+        author: results.author,
+        author_books: results.authors_books
+      });
+    }
+  );
 };
 
 // Handle Author delete on POST.
-exports.author_delete_post = function(req, res) {
-  res.send("NOT IMPLEMENTED: Author delete POST");
+exports.author_delete_post = function(req, res, next) {
+  async.parallel(
+    {
+      author: cb => {
+        Author.findById(req.params.id).exec(cb);
+      },
+      author_books: cb => {
+        Book.find({ author: req.params.id }).exec(cb);
+      }
+    },
+    (err, results) => {
+      if (err) {
+        return next(err);
+      }
+      // Success
+      if (results.author_books.length > 0) {
+        // Author has books. Render in same way as for GET route.
+        res.render("author_delete", {
+          title: "Delete Author",
+          author: results.author,
+          author_books: results.authors_books
+        });
+        return;
+      } else {
+        // Author has no books. Delete object and redirect to the list of authors.
+        Author.findByIdAndRemove(req.body.authorid, function deleteAuthor(err) {
+          if (err) {
+            return next(err);
+          }
+          // Success - go to author list
+          res.redirect("/catalog/authors");
+        });
+      }
+    }
+  );
 };
 
 // Display Author update form on GET.
