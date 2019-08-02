@@ -1,7 +1,4 @@
-body {
-  padding: 50px;
-}
-
-a {
-  color: #00b7ff;
+body,
+html {
+  height: 100%;
 }
