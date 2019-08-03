@@ -9,6 +9,13 @@ block content
                         i.fas.fa-user-plus
                         |  Register
                 .card-body
+                    if errors
+                        ul
+                            for error in errors
+                                div(class="alert alert-warning alert-dismissible fade show" role="alert")
+                                    li(style="list-style:none;") #{error.msg}
+                                    button(type="button" class="close" data-dismiss="alert" aria-label="Close")
+                                        span(aria-hidden="true") &times
                     form(action='/users/register', method='POST')
                         .form-group
                             label(for='name') Name
@@ -22,7 +29,6 @@ block content
                         .form-group
                             label(for='password2') Confirm Password
                             input#password2.form-control(type='password', name='password2', placeholder='Confirm Password', value=(typeof password2 != 'undefined' ? password2 : ''))
-                        button.btn.btn-primary.btn-block(type='submit') Register
+                        button.btn.btn-primary.btn-block(type='submit text-white') Register
                         p.lead.mt-4 Have An Account? 
                             a(href='/users/login') Login
-

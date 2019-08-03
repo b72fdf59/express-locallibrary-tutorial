@@ -3,6 +3,8 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+var flash = require("connect-flash");
+var session = require("express-session");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
@@ -30,6 +32,23 @@ app.set("view engine", "pug");
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+//Express Session
+app.use(
+  session({
+    secret: "my secret",
+    resave: true,
+    saveUninitialized: true
+  })
+);
+//Connect flash
+app.use(flash());
+
+//Global Vars
+app.use((req, res, next) => {
+  res.locals.success_msg = req.flash("success_msg");
+  res.locals.err_msg = req.flash("err_msg");
+  next();
+});
 app.use(cookieParser());
 app.use(helmet());
 app.use(compression()); // Compress all routes

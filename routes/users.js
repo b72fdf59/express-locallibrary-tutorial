@@ -1,5 +1,6 @@
 var express = require("express");
 var router = express.Router();
+var userController = require("../controllers/userContoller");
 
 /* GET users listing. */
 router.get("/", function(req, res, next) {
@@ -7,17 +8,12 @@ router.get("/", function(req, res, next) {
 });
 
 //Login Page
-router.get("/login", function(req, res, next) {
-  res.render("login", {
-    title: "Login"
-  });
-});
+router.get("/login", userController.user_login);
 
 //Registration Page
-router.get("/register", function(req, res, next) {
-  res.render("register", {
-    title: "Register"
-  });
-});
+router.get("/register", userController.user_register_get);
+
+//Register Handle
+router.post("/register", userController.user_register_post);
 
 module.exports = router;

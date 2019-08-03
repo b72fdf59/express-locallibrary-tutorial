@@ -1,0 +1,6 @@
+extends layout
+
+block content
+    h1(class="align-self-center") Dashboard
+    p.lead.mb-3 Welcome #{user.name}
+    a(href="/users/logout" class="btn btn-secondary") Logout
