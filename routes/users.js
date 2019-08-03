@@ -16,4 +16,10 @@ router.get("/register", userController.user_register_get);
 //Register Handle
 router.post("/register", userController.user_register_post);
 
+//Login Post
+router.post("/login", userController.user_login_post);
+
+//Logout
+router.get("/logout", userController.user_logout_get);
+
 module.exports = router;

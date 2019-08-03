@@ -5,7 +5,7 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var flash = require("connect-flash");
 var session = require("express-session");
-
+var passport = require("passport");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var catalogRouter = require("./routes/catalog"); //Import routes for "catalog" area of site
@@ -14,6 +14,8 @@ var compression = require("compression");
 var helmet = require("helmet");
 
 var app = express();
+//Passport config
+require("./config/passport")(passport);
 
 // Set up mongoose connection
 var mongoose = require("mongoose");
@@ -47,8 +49,11 @@ app.use(flash());
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash("success_msg");
   res.locals.err_msg = req.flash("err_msg");
+  res.locals.error = req.flash("error");
   next();
 });
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(cookieParser());
 app.use(helmet());
 app.use(compression()); // Compress all routes

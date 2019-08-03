@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const validator = require("express-validator");
 const bcrpyt = require("bcryptjs");
+const passport = require("passport");
 
 //Get handler for Login
 exports.user_login = (req, res) => {
@@ -103,3 +104,49 @@ exports.user_register_post = [
     }
   }
 ];
+
+exports.user_login_post = [
+  //Valid that email exists and is valid
+  validator
+    .body("email")
+    .isEmail()
+    .withMessage("Please enter a valid email."),
+  //Password exists
+  validator
+    .body("password")
+    .exists()
+    .withMessage("Password must be specified."),
+  //Sanitize fields
+  validator.sanitizeBody("email").normalizeEmail(),
+  validator.sanitizeBody("password").escape(),
+
+  //Process request after sanitisation and validation
+  (req, res, next) => {
+    //Extract validation errors from request
+    const errors = validator.validationResult(req);
+
+    const { email } = req.body;
+
+    if (!errors.isEmpty()) {
+      //There are errors
+      res.render("login", {
+        title: "Login",
+        email,
+        errors: errors.array()
+      });
+      return;
+    } else {
+      passport.authenticate("local", {
+        successRedirect: "/dashboard",
+        failureRedirect: "/users/login",
+        failureFlash: true
+      })(req, res, next);
+    }
+  }
+];
+
+exports.user_logout_get = (req, res, next) => {
+  req.logout();
+  req.flash("success_msg", "You are logged out");
+  res.redirect("/users/login");
+};

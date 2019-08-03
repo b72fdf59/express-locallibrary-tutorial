@@ -8,6 +8,13 @@ block content
                     h1.text-center.mb-3
                         i.fas.fa-sign-in-alt Login
                 .card-body
+                    if errors
+                        ul
+                            for error in errors
+                                div(class="alert alert-warning alert-dismissible fade show" role="alert")
+                                    li(style="list-style:none;") #{error.msg}
+                                    button(type="button" class="close" data-dismiss="alert" aria-label="Close")
+                                        span(aria-hidden="true") &times
                     if(success_msg != '')
                         div(class="alert alert-success alert-dismissible fade show" role="alert")
                                     =success_msg
@@ -16,6 +23,11 @@ block content
                     if(err_msg != '')
                         div(class="alert alert-warning alert-dismissible fade show" role="alert")
                                     =err_msg
+                                    button(type="button" class="close" data-dismiss="alert" aria-label="Close")
+                                        span(aria-hidden="true") &times
+                    if(error != '')
+                        div(class="alert alert-warning alert-dismissible fade show" role="alert")
+                                    =error
                                     button(type="button" class="close" data-dismiss="alert" aria-label="Close")
                                         span(aria-hidden="true") &times
                     form(action='/users/login', method='POST')
