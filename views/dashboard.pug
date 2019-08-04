@@ -1,6 +1,12 @@
-extends layout
+extends loggedlayout
 
 block content
-    h1(class="align-self-center") Dashboard
-    p.lead.mb-3 Welcome #{user.name}
-    a(href="/users/logout" class="btn btn-secondary") Logout
+    .row.align-items-center.justify-content-around
+        .col-4
+            h1 Dashboard
+        .col-6  
+            .row.align-items-center  
+                .col-8
+                    p.lead.mb-3 Welcome #{user.name}
+                .col-4
+                    a(href="/users/logout" class="btn btn-secondary") Logout
